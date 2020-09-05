@@ -6,12 +6,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.core.MediaType;
+
+import io.smallrye.mutiny.Multi;
+import io.smallrye.mutiny.Uni;
+
 import java.util.List;
 
 import javax.inject.Inject;
-
-import java.util.concurrent.CompletionStage;
-
 
 @Path("/catalog")
 @Produces(MediaType.APPLICATION_JSON)
@@ -21,13 +22,14 @@ public class CatalogResource {
     @Inject ProductService productService;
 
     @GET
-    public CompletionStage<List<Product>> list() {
+    public Uni<List<Product>> list() {
         return productService.list();
     }
 
     @POST
-    public CompletionStage<List<Product>>  add(Product product) {
-        productService.add(product);
-        return list();
+    public Uni<List<Product>>  add(Product product) {
+        return productService.add(product).
+            onItem().ignore().andSwitchTo(this::list);
+
     }
 }

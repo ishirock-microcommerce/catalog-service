@@ -1,8 +1,12 @@
 package com.ishirock.catalog.codec;
 
-import com.mongodb.MongoClient;
+import com.mongodb.MongoClientSettings;
 import com.ishirock.catalog.Product;
-import org.bson.*;
+import org.bson.Document;
+import org.bson.BsonWriter;
+import org.bson.BsonValue;
+import org.bson.BsonReader;
+import org.bson.BsonString;
 import org.bson.codecs.Codec;
 import org.bson.codecs.CollectibleCodec;
 import org.bson.codecs.DecoderContext;
@@ -15,7 +19,7 @@ public class ProductCodec implements CollectibleCodec<Product> {
     private final Codec<Document> documentCodec;
 
     public ProductCodec() {
-        this.documentCodec = MongoClient.getDefaultCodecRegistry().get(Document.class);
+        this.documentCodec = MongoClientSettings.getDefaultCodecRegistry().get(Document.class);
     }
 
     @Override

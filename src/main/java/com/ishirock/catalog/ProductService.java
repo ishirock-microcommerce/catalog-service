@@ -1,29 +1,30 @@
 package com.ishirock.catalog;
 
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.List;
 
-import io.quarkus.mongodb.ReactiveMongoClient;
-import io.quarkus.mongodb.ReactiveMongoCollection;
-import java.util.concurrent.CompletionStage;
+import io.quarkus.mongodb.reactive.ReactiveMongoClient;
+import io.quarkus.mongodb.reactive.ReactiveMongoCollection;
+import io.smallrye.mutiny.Uni;
 
 @ApplicationScoped
 public class ProductService{
 
     @Inject ReactiveMongoClient mongoClient;
 
-    public CompletionStage<List<Product>> list(){
+    public Uni<List<Product>> list(){
         return getCollection().find().map(
             doc -> {
             Product product = new Product();
             product = (Product) doc;
             return product;
-        }).toList().run();
+        }).collectItems().asList();
+
     }
 
-    public CompletionStage<Void> add(Product product){
-        return getCollection().insertOne(product);
+    public Uni<Void> add(Product product){
+        return getCollection().insertOne(product).onItem().ignore().andContinueWithNull();
     }
 
 
