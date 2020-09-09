@@ -29,7 +29,7 @@ public class CatalogResource {
 
     @GET
     @Path("{id}")
-    public Multi<Product> findProduct(@PathParam("id") String id) {
+    public Multi<Product> getProduct(@PathParam("id") String id) {
         return productService.getProduct(id);
     }
 
